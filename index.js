@@ -1,34 +1,51 @@
-import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { typeDefs } from './schema.js';
-import { ApolloServerPluginInlineTrace } from "apollo-server-core";
+import { ApolloServer } from '@apollo/server'
+import { startStandaloneServer } from '@apollo/server/standalone'
 
-import db from "./_db.js"
+// data
+import db from './_db.js'
 
+// types
+import { typeDefs } from './schema.js'
+
+// resolvers
 const resolvers = {
     Query: {
         games() {
             return db.games
         },
-        reviews() {
-            return db.reviews
+        game(_, args) {
+            return db.games.find((game) => game.id === args.id)
         },
         authors() {
             return db.authors
+        },
+        author(_, args) {
+            return db.authors.find((author) => author.id === args.id)
+        },
+        reviews() {
+            return db.reviews
+        },
+        review(_, args) {
+            return db.reviews.find((review) => review.id === args.id)
         }
-    }
+    },
+    Game: {
+        reviews(parent) {
+            return db.reviews.filter((r) => r.game_id === parent.id)
+        }
+    },
+
+
 }
 
-//server setup 
+// server setup
 const server = new ApolloServer({
     typeDefs,
-    resolvers,
-    plugins: [ApolloServerPluginInlineTrace()],
-
+    resolvers
 })
 
 const { url } = await startStandaloneServer(server, {
     listen: { port: 4000 }
 })
 
-console.log('server ready at port ', 4000)
+console.log(`Server ready at: ${url}`)
