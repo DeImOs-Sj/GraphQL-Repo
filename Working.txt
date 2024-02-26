@@ -7,4 +7,6 @@
 4)GraphQL solves the scaling issue by providing query language support using which we can easliy fetch data 
   from server by hitting single endpoint
 5)Apollo server same as postman for seeing GraphQL queries
+6)To get something from graphQL we use query
+7)To send something to graphQL server we use Mutation 
   
