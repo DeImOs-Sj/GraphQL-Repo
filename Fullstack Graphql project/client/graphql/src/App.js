@@ -1,13 +1,11 @@
 import logo from './logo.svg';
 import './App.css';
-import { ApolloClient, InMemoryCache} from '@apollo/client'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
+import { useQuery } from '@apollo/client'
+import { gql } from 'apollo-server-core';
 
-
-
-
-const query = `
-
-query ExampleQuery {
+const query = gql`
+query GetTodoWithUser {
 getTodos {
   title
   completed
@@ -18,28 +16,30 @@ getTodos {
   }
 }
 
-}
+}`
 
 
-`
+
 
 function App() {
+  const { data, loading } = useQuery(query)
+        console.log(data)
+
+  
+if(loading) return <h1>Loading...</h1>
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+
+      <table>
+        {
+          data.getTodos.map(todo => <tr>
+            <td>{todo.title}</td>
+            <td>{ todo?.user?.name}</td>
+
+          </tr>)
+        }
+      </table>
     </div>
   );
 }
